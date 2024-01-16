@@ -8,10 +8,12 @@ import {
 } from '@nestjs/swagger';
 
 // import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common'
+import { ValidationPipe } from '@nestjs/common';
 import responseTime from 'response-time';
 import * as process from 'process';
 import * as bodyParser from 'body-parser';
+import { LoggingInterceptor } from './helper/interceptor/request-logging';
+import { ResponseTransformInterceptor } from './helper/interceptor/request-transformation';
 
 process.env.TZ = 'UTC';
 
@@ -29,6 +31,10 @@ async function bootstrap() {
   app.use(bodyParser.json({ limit: '50mb' }));
 
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+  app.useGlobalInterceptors(
+    new LoggingInterceptor(),
+    new ResponseTransformInterceptor(),
+  );
 
   //Handling for /new/ Path on live servers
   const swaggerPath = 'api/swagger';
@@ -54,8 +60,11 @@ async function bootstrap() {
     SwaggerModule.createDocument(app, config.build()),
     customOptions,
   );
-
   await app.listen(3000);
+  console.info(`Service started at : http://127.0.0.1:3000`);
+  console.info(
+    `Api documentation available at : http://127.0.0.1:3000/${swaggerPath}`,
+  );
 }
 
 bootstrap();
