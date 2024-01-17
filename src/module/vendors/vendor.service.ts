@@ -4,7 +4,7 @@ import { ShippingAndBillingAddressDto } from './dto/address-dto';
 import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { DATABASE_INSTANCE } from 'src/config/database/database.constants';
-import { UtilService } from '../util.service';
+import { UtilService } from '../util/util.service';
 @Injectable()
 export class VendorSerivce {
   constructor(

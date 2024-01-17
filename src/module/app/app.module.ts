@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm/dist/interfaces/typeorm-options.interface';
 import { DATABASE_INSTANCE } from 'src/config/database/database.constants';
 import { VendorsModule } from '../vendors/vendor.module';
-import { UtilModule } from '../util.module';
+import { UtilModule } from '../util/util.module';
 
 @Module({
   imports: [
