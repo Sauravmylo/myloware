@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateVendorBodyDto } from './dto/create-vendor-dto';
 import { ShippingAndBillingAddressDto } from './dto/address-dto';
+import { VendorCatalogBodyDto } from './dto/vendor-catalog';
 import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { DATABASE_INSTANCE } from 'src/config/database/database.constants';
@@ -166,5 +167,27 @@ export class VendorSerivce {
       );
     }
     await Promise.all(pendingPromise);
+  }
+  async createVendorCatalog(vendorCatalogBodyDto: VendorCatalogBodyDto) {
+    const vendorCode = vendorCatalogBodyDto.vendorCode;
+    const itemTypeSkuCode = vendorCatalogBodyDto.itemTypeSkuCode;
+    const vendorSkuCode = vendorCatalogBodyDto.vendorSkuCode;
+    const inventory = vendorCatalogBodyDto.inventory;
+    const unitPrice = vendorCatalogBodyDto.unitPrice;
+    const priority = vendorCatalogBodyDto.priority;
+    const enabled = vendorCatalogBodyDto.enabled ? '1' : '0';
+
+    await this.entityManagerMaster.query(
+      `INSERT INTO vendor_catalog (vendorCode,itemTypeSkuCode,vendorSkuCode,inventory,unitPrice,priority,enabled) VALUES (?,?,?,?,?,?,?)`,
+      [
+        vendorCode,
+        itemTypeSkuCode,
+        vendorSkuCode,
+        inventory,
+        unitPrice,
+        priority,
+        enabled,
+      ],
+    );
   }
 }

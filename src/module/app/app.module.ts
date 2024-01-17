@@ -7,6 +7,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm/dist/interfaces/typeorm-op
 import { DATABASE_INSTANCE } from 'src/config/database/database.constants';
 import { VendorsModule } from '../vendors/vendor.module';
 import { UtilModule } from '../util/util.module';
+import { PurchaseOrderModule } from '../purchaseOrder/purchase-order.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { UtilModule } from '../util/util.module';
     }),
     VendorsModule,
     UtilModule,
+    PurchaseOrderModule,
     // import { ConfigModule, ConfigService } from '@nestjs/config';
     // import { VendorModule } from '../vendor/vendor.module';
     // import { Vendor } from '../vendor/entities/vendor.entity';
