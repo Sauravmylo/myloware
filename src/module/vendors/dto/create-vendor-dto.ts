@@ -6,25 +6,35 @@ export class CreateVendorBodyDto {
   code: string;
   @ApiProperty()
   name: string;
-  @ApiProperty()
+
+  @ApiPropertyOptional()
   pan: string;
-  @ApiProperty()
+
+  @ApiPropertyOptional()
   tin: string;
-  @ApiProperty()
+
+  @ApiPropertyOptional()
   cstNumber: string;
-  @ApiProperty()
+
+  @ApiPropertyOptional()
   stNumber: string;
-  @ApiProperty()
+
+  @ApiPropertyOptional()
   gstNumber: string;
-  @ApiProperty()
+
+  @ApiPropertyOptional()
   purchaseExpiryPeriod: number;
-  @ApiProperty()
+
+  @ApiPropertyOptional({ type: 'enum', enum: ['1', '2'], default: '1' })
   acceptsCForm: string;
-  @ApiProperty()
+
+  @ApiPropertyOptional({ type: 'enum', enum: ['1', '2'], default: '1' })
   taxExempted: string;
-  @ApiProperty()
+
+  @ApiPropertyOptional({ type: 'enum', enum: ['1', '2'], default: '1' })
   enabled: string;
-  @ApiProperty()
+
+  @ApiPropertyOptional({ type: 'enum', enum: ['1', '2'], default: '1' })
   registeredDealer: string;
   @ApiProperty({ type: ShippingAndBillingAddressDto })
   shippingAddress: ShippingAndBillingAddressDto;

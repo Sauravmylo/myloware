@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { VendorSerivce } from './vendor.service';
 import { VendorApiPath, VendorApi, VendorApiTags } from './vendor.constant';
@@ -12,5 +12,12 @@ export class VendorController {
   @Post(VendorApiPath.CREATE_VENDOR)
   async createVendor(@Body() createVendorBodyDto: CreateVendorBodyDto) {
     return await this.vendorService.createVendor(createVendorBodyDto);
+  }
+  @Put(`${VendorApiPath.UPDATE_VENDOR}/:code`)
+  async updateVendor(
+    @Param('code') code: string,
+    @Body() createVendorBodyDto: CreateVendorBodyDto,
+  ) {
+    return await this.vendorService.updateVendor(code, createVendorBodyDto);
   }
 }

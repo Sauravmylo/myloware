@@ -21,18 +21,11 @@ export class VendorSerivce {
     delete createVendorBodyDto?.partyContacts;
     delete createVendorBodyDto?.shippingAddress;
     delete createVendorBodyDto?.billingAddress;
-    let vendorData = {};
-    vendorData = {
-      ...createVendorBodyDto,
-      ...partyContacts,
-      contact_name,
-    };
-    console.log('we are hereeeeeeeee', vendorData);
-    // const shippingAddressId = await this.storeVendorAddress(shippingAddress);
-    // let billingAddressId = shippingAddressId;
-    // if (!this.utilService.isEqual(shippingAddress, billingAddress)) {
-    //   billingAddressId = await this.storeVendorAddress(billingAddress);
-    // }
+    const pendingPromise = [];
+    pendingPromise.push(this.storeVendorAddress(shippingAddress));
+    pendingPromise.push(this.storeVendorAddress(billingAddress));
+    const [shippingAddressId, billingAddressId] =
+      await Promise.all(pendingPromise);
     const code = createVendorBodyDto.code;
     const name = createVendorBodyDto.name;
     const pan = createVendorBodyDto.pan;
@@ -43,12 +36,9 @@ export class VendorSerivce {
     const purchaseExpiryPeriod = createVendorBodyDto.purchaseExpiryPeriod;
     const acceptsCForm = createVendorBodyDto.acceptsCForm;
     const taxExempted = createVendorBodyDto.taxExempted;
-    console.log(acceptsCForm, taxExempted);
     const enabled = createVendorBodyDto.enabled;
     const registeredDealer = createVendorBodyDto.registeredDealer;
-    const shippingAddressId = 3;
-    const billingAddressId = 3;
-    const output = await this.entityManagerMaster.query(
+    await this.entityManagerMaster.query(
       `INSERT INTO vendor (code,name,pan,tin,cstNumber,stNumber,gstNumber,purchaseExpiryPeriod,acceptsCForm,taxExempted,enabled,registeredDealer,contact_name,shippingAddressId,billingAddressId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         code,
@@ -68,8 +58,7 @@ export class VendorSerivce {
         billingAddressId,
       ],
     );
-    console.log('hereeeeeee', output);
-    return;
+    return `vendor created successfully`;
   }
   async storeVendorAddress(
     shippingAndBillingAddressDto: ShippingAndBillingAddressDto,
@@ -94,5 +83,88 @@ export class VendorSerivce {
       ],
     );
     return address.insertId;
+  }
+  async updateVendor(code: string, createVendorBodyDto: CreateVendorBodyDto) {
+    await this.updateVendorAddress(
+      code,
+      createVendorBodyDto.shippingAddress,
+      createVendorBodyDto.billingAddress,
+    );
+    // update vendor fields.
+    const partyContacts = createVendorBodyDto?.partyContacts;
+    const contact_name = partyContacts.contactType;
+    delete createVendorBodyDto?.partyContacts;
+    delete createVendorBodyDto?.shippingAddress;
+    delete createVendorBodyDto?.billingAddress;
+    delete partyContacts.contactType;
+    let vendorData = {};
+    vendorData = {
+      ...createVendorBodyDto,
+      ...partyContacts,
+      contact_name,
+    };
+
+    let query = `UPDATE vendor set `;
+    for (const key of Object.keys(vendorData)) {
+      query += ` ${key} = '${vendorData[key]}',`;
+    }
+    // remove last (,)
+    query = query.slice(0, -1);
+    query += ` where code = ?`;
+    await this.entityManagerMaster.query(query, [code]);
+    return 'vendor created successfully';
+  }
+  async updateVendorAddress(
+    code: string,
+    shippingAddress: ShippingAndBillingAddressDto,
+    billingAddress: ShippingAndBillingAddressDto,
+  ) {
+    const currentAddresses = await this.entityManagerMaster.query(
+      `select billingAddressId,shippingAddressId from vendor where code = ?`,
+      [code],
+    );
+    const shipAddressId = currentAddresses?.length
+      ? currentAddresses[0].shippingAddressId
+      : null;
+    const billAddressId = currentAddresses?.length
+      ? currentAddresses[0].billingAddressId
+      : null;
+    //update shippinAddress
+    const pendingPromise = [];
+    if (shippingAddress && shipAddressId) {
+      pendingPromise.push(
+        this.entityManagerMaster.query(
+          `update addresses set addressLine1 = ?,addressLine2 =?,countryCode =?, pincode =?, stateCode =?, city =?, phone =? where id = ?`,
+          [
+            shippingAddress.addressLine1,
+            shippingAddress.addressLine2,
+            shippingAddress.countryCode,
+            shippingAddress.pincode,
+            shippingAddress.stateCode,
+            shippingAddress.city,
+            shippingAddress.phone,
+            shipAddressId,
+          ],
+        ),
+      );
+    }
+    if (billingAddress && billAddressId) {
+      pendingPromise.push(
+        this.entityManagerMaster.query(
+          `update addresses set addressLine1 = ?,addressLine2 =?,countryCode =?, pincode =?, stateCode =?, city =?, phone =? where id = ?`,
+          [
+            billingAddress.addressLine1,
+            billingAddress.addressLine2,
+            billingAddress.countryCode,
+            billingAddress.pincode,
+            billingAddress.stateCode,
+            billingAddress.city,
+            billingAddress.phone,
+            billAddressId,
+          ],
+        ),
+      );
+    }
+    await Promise.all(pendingPromise);
   }
 }

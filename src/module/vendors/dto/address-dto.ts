@@ -3,12 +3,12 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class ShippingAndBillingAddressDto {
   @ApiProperty()
   addressLine1: string;
-  @ApiProperty()
+  @ApiProperty({ default: null })
   addressLine2: string;
   @ApiProperty()
   countryCode: string;
   @ApiProperty()
-  pincode: string;
+  pincode: number;
   @ApiProperty()
   stateCode: string;
   @ApiProperty()
