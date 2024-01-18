@@ -7,4 +7,6 @@ export enum PurchaseOrderApi {
 }
 export enum PurchaseOrderApiPath {
   CREATE = 'create',
+  GET_PURCHASE_ORDER = 'getPurchaseOrder',
+  GET_PURCHASE_ORDER_DETAIL = 'getPurchaseOrderDetails',
 }

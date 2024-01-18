@@ -14,6 +14,9 @@ export class purchase_order_items {
   @Column()
   quantity: number;
 
+  @Column({ default: 0 })
+  pendingQuantity: number;
+
   @Column({ type: 'decimal', scale: 2 })
   unitPrice: number;
 
@@ -25,6 +28,9 @@ export class purchase_order_items {
 
   @Column({ type: 'decimal', scale: 2 })
   discountPercentage: number;
+
+  @Column({ type: 'decimal', scale: 2 })
+  tax: number;
 
   @Column({ nullable: true })
   taxTypeCode: string;

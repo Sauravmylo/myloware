@@ -20,6 +20,18 @@ export class purchase_order {
   @Column({ default: 0 })
   logisticCharges: number;
 
+  @Column({ type: 'decimal', scale: 2, default: 0, nullable: true })
+  taxOnSales: number;
+
+  @Column({ type: 'decimal', scale: 2, default: 0, nullable: true })
+  totalAmount: number;
+
+  @Column({ nullable: true })
+  createdBy: string;
+
+  @Column({ nullable: true })
+  statusCode: string;
+
   @Column({ type: 'enum', default: '1', enum: ['0', '1'], nullable: true })
   status: string;
 
