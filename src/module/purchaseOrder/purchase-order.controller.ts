@@ -9,6 +9,7 @@ import { PurchaseOrderBodyDto } from './dto/purchase-order.dto';
 import { PurchaseOrderService } from './purchase-order.service';
 import { CreadtedAtBetween } from './dto/created-between.dto';
 import { PurchaseOrderDetailDto } from './dto/purchase-order-detail.dto';
+import { ChangePoStatusBodyDto } from './dto/change-po-status.dto';
 
 @ApiTags(PurchaseOrderApiTags.API_TAG)
 @Controller(PurchaseOrderApi.CONTROLLER)
@@ -32,6 +33,12 @@ export class PurchaseOrderController {
   ) {
     return await this.purchaseOrderService.getPurchaseOrderDetail(
       purchaseOrderDetailDto,
+    );
+  }
+  @Post(PurchaseOrderApiPath.CHANGE_PO_STATUS)
+  async changePoStatus(@Body() changePoStatusBodyDto: ChangePoStatusBodyDto) {
+    return await this.purchaseOrderService.changePoStatus(
+      changePoStatusBodyDto,
     );
   }
 }

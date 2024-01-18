@@ -9,4 +9,5 @@ export enum PurchaseOrderApiPath {
   CREATE = 'create',
   GET_PURCHASE_ORDER = 'getPurchaseOrder',
   GET_PURCHASE_ORDER_DETAIL = 'getPurchaseOrderDetails',
+  CHANGE_PO_STATUS = 'changePoStatus',
 }

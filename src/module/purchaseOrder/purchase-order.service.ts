@@ -6,6 +6,7 @@ import { PurchaseOrderItemsDto } from './dto/purchase-order-items.dto';
 import { DATABASE_INSTANCE } from 'src/config/database/database.constants';
 import { CreadtedAtBetween } from './dto/created-between.dto';
 import { PurchaseOrderDetailDto } from './dto/purchase-order-detail.dto';
+import { ChangePoStatusBodyDto } from './dto/change-po-status.dto';
 @Injectable()
 export class PurchaseOrderService {
   constructor(
@@ -127,5 +128,14 @@ export class PurchaseOrderService {
       };
     }
     return result;
+  }
+  async changePoStatus(changePoStatusBodyDto: ChangePoStatusBodyDto) {
+    const orderStatus = changePoStatusBodyDto.po_status;
+    const poCode = changePoStatusBodyDto.purchaseOrderCode;
+    await this.entityManagerMaster.query(
+      `UPDATE purchase_orders set statusCode = ? where poCode = ?`,
+      [orderStatus, poCode],
+    );
+    return 'status updated successfully';
   }
 }
